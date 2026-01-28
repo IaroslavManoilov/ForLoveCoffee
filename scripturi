@@ -1,7 +1,46 @@
+/*
+<template>
+  <div class="page">
+    <h1>Контакты</h1>
+
+    <div class="box">
+      <div><b>Телефон:</b> +373 XX XXX XXX</div>
+      <div><b>Адрес:</b> Chișinău, ...</div>
+      <div><b>Часы:</b> 09:00 – 22:00</div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.page {
+  min-height: 100vh;
+  padding: 140px 40px 40px;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+h1 {
+  font-size: 44px;
+  margin: 0 0 16px;
+}
+
+.box {
+  font-size: 20px;
+  line-height: 1.6;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.04);
+  max-width: 700px;
+}
+</style>
+
+*/
+
+
+/*
 <template>
   <div class="page" @mousemove="onMouseMove">
-    <!-- фон -->
-    <div class="bg" aria-hidden="true">
+    <!-- фоновые слои -->
+    <div class="bg">
       <div class="bg__warm" />
       <div class="bg__grain" />
       <div class="bg__blob bg__blob--1" />
@@ -9,80 +48,37 @@
     </div>
 
     <main class="wrap">
-      <!-- INTRO -->
+      <!-- верхний блок -->
       <section class="intro" :style="tiltStyle">
-        <div class="intro__badge">☕ Контакты & Тёплые встречи</div>
+        <div class="intro__badge">☕ Контакты & Атмосфера</div>
 
         <h1 class="intro__title">
-          На связи с любовью<span class="dot">.</span>
+          Давай общаться<span class="dot">.</span>
         </h1>
 
         <p class="intro__text">
-          Есть вопрос, идея или просто настроение зайти? Мы рядом.
-          Пиши, звони — и да, у нас всегда найдётся чашка с любовью.
+          Мы всегда рады старым друзьям и новым знакомствам. Если у тебя есть вопрос по зерну,
+          предложение или ты просто хочешь сказать «привет» — мы на связи.
         </p>
 
         <div class="intro__actions">
           <a class="btn btn--primary" :href="telHref">
             <span class="btn__icon" aria-hidden="true">
-              <!-- phone -->
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M6.8 2.9c.5-.4 1.2-.4 1.7.1l2.1 2.3c.4.5.5 1.1.2 1.6l-1.1 2c-.2.4-.2.9 0 1.3a15.4 15.4 0 0 0 4.1 4.1c.4.2.9.2 1.3 0l2-1.1c.5-.3 1.2-.2 1.6.2l2.3 2.1c.5.5.5 1.2.1 1.7l-1.2 1.5c-.6.8-1.6 1.1-2.6.9-3.8-.7-7.3-2.9-10.3-5.9S4 9.2 3.3 5.4c-.2-1 .1-2 .9-2.6l1.6-1.3Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
+              <IconPhone />
             </span>
             Позвонить
           </a>
 
           <button class="btn btn--ghost" type="button" @click="copy(phone)">
             <span class="btn__icon" aria-hidden="true">
-              <!-- copy -->
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M9 9h10v12H9V9Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                />
-              </svg>
+              <IconCopy />
             </span>
             Скопировать номер
           </button>
 
           <NuxtLink class="btn btn--soft" to="/menu">
             <span class="btn__icon" aria-hidden="true">
-              <!-- cup -->
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M16 10h2a3 3 0 0 1 0 6h-2"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M7 3c0 2 2 2 2 4M11 3c0 2 2 2 2 4"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                />
-              </svg>
+              <IconCup />
             </span>
             Посмотреть меню
           </NuxtLink>
@@ -94,29 +90,18 @@
         </div>
       </section>
 
-      <!-- GRID -->
+      <!-- контент -->
       <section class="grid">
-        <!-- CONTACTS -->
-        <article class="card reveal">
+        <!-- карточка контактов -->
+        <article class="card reveal" ref="revealRoot">
           <div class="card__head">
             <h2 class="card__title">Наши контакты</h2>
-            <p class="card__subtitle">Быстро, просто, с любовью.</p>
+            <p class="card__subtitle">Быстро, просто, по-человечески.</p>
           </div>
 
           <div class="list">
             <div class="item">
-              <div class="item__icon" aria-hidden="true">
-                <!-- phone -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M6.8 2.9c.5-.4 1.2-.4 1.7.1l2.1 2.3c.4.5.5 1.1.2 1.6l-1.1 2c-.2.4-.2.9 0 1.3a15.4 15.4 0 0 0 4.1 4.1c.4.2.9.2 1.3 0l2-1.1c.5-.3 1.2-.2 1.6.2l2.3 2.1c.5.5.5 1.2.1 1.7l-1.2 1.5c-.6.8-1.6 1.1-2.6.9-3.8-.7-7.3-2.9-10.3-5.9S4 9.2 3.3 5.4c-.2-1 .1-2 .9-2.6l1.6-1.3Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
+              <div class="item__icon" aria-hidden="true"><IconPhone /></div>
               <div class="item__body">
                 <div class="item__label">Телефон</div>
                 <div class="item__value">
@@ -127,22 +112,7 @@
             </div>
 
             <div class="item">
-              <div class="item__icon" aria-hidden="true">
-                <!-- pin -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 22s7-5.4 7-12a7 7 0 1 0-14 0c0 6.6 7 12 7 12Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 12.1a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                </svg>
-              </div>
+              <div class="item__icon" aria-hidden="true"><IconPin /></div>
               <div class="item__body">
                 <div class="item__label">Где мы?</div>
                 <div class="item__value">
@@ -155,23 +125,7 @@
             </div>
 
             <div class="item">
-              <div class="item__icon" aria-hidden="true">
-                <!-- clock -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                  <path
-                    d="M12 6v6l4 2"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
+              <div class="item__icon" aria-hidden="true"><IconClock /></div>
               <div class="item__body">
                 <div class="item__label">Часы</div>
                 <div class="item__value">
@@ -195,7 +149,7 @@
           </div>
         </article>
 
-        <!-- SOCIAL + FEATURES -->
+        <!-- соцсети -->
         <article class="card card--accent reveal">
           <div class="card__head">
             <h2 class="card__title">Мы в соцсетях</h2>
@@ -213,64 +167,12 @@
               @click="track(s.title)"
             >
               <span class="social__icon" aria-hidden="true">
-                <!-- telegram -->
-                <svg v-if="s.kind === 'telegram'" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M21.5 4.8 3.2 12.2c-1.1.4-1.1 1.9.1 2.3l4.7 1.6 1.8 5.6c.4 1.1 1.9 1.2 2.4.2l2.6-4.7 4.7 3.4c.8.6 2 .1 2.2-.9l2.7-14.1c.2-1.1-.9-2.1-2-1.8Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M8.1 16.1 20.6 6.2"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                  />
-                </svg>
-
-                <!-- instagram -->
-                <svg v-else-if="s.kind === 'instagram'" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                  <path
-                    d="M12 16.2A4.2 4.2 0 1 0 12 7.8a4.2 4.2 0 0 0 0 8.4Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                  <path
-                    d="M17.5 6.5h.01"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                  />
-                </svg>
-
-                <!-- map -->
-                <svg v-else viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M9 18 3.5 20V6l5.5-2 6 2 5.5-2v14L15 20l-6-2Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M9 4v14M15 6v14"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                  />
-                </svg>
+                <component :is="s.icon" />
               </span>
-
               <span class="social__text">
                 <span class="social__title">{{ s.title }}</span>
                 <span class="social__desc">{{ s.desc }}</span>
               </span>
-
               <span class="social__arrow" aria-hidden="true">→</span>
             </a>
           </div>
@@ -279,59 +181,21 @@
 
           <div class="features">
             <div class="feature">
-              <div class="feature__icon" aria-hidden="true">
-                <!-- heart -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 21s-7-4.4-9.2-8.7C1 8.7 3.2 5.8 6.4 5.5c1.8-.2 3.4.7 4.3 2 1-1.3 2.6-2.2 4.3-2 3.2.3 5.4 3.2 3.6 6.8C19 16.6 12 21 12 21Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
+              <div class="feature__icon" aria-hidden="true"><IconHeart /></div>
               <div class="feature__text">
                 <div class="feature__title">For People</div>
                 <div class="feature__desc">Запоминаем вкусы постоянных гостей.</div>
               </div>
             </div>
-
             <div class="feature">
-              <div class="feature__icon" aria-hidden="true">
-                <!-- star -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.9 6.1 20l1.2-6.5L2.5 8.9 9.1 8 12 2Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
+              <div class="feature__icon" aria-hidden="true"><IconStar /></div>
               <div class="feature__text">
                 <div class="feature__title">Качество</div>
                 <div class="feature__desc">Работаем с проверенным зерном.</div>
               </div>
             </div>
-
             <div class="feature">
-              <div class="feature__icon" aria-hidden="true">
-                <!-- spark -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 2l1.2 4.2L17.5 7.5l-4.3 1.3L12 13l-1.2-4.2L6.5 7.5l4.3-1.3L12 2Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M19 12l.8 2.6L22 15l-2.2.4L19 18l-.8-2.6L16 15l2.2-.4L19 12Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
+              <div class="feature__icon" aria-hidden="true"><IconSpark /></div>
               <div class="feature__text">
                 <div class="feature__title">Атмосфера</div>
                 <div class="feature__desc">Можно поработать или помолчать — уютно.</div>
@@ -340,7 +204,7 @@
           </div>
         </article>
 
-        <!-- MAP -->
+        <!-- карта -->
         <article class="card map reveal">
           <div class="card__head">
             <h2 class="card__title">Загляни к нам</h2>
@@ -348,6 +212,8 @@
           </div>
 
           <div class="map__frame">
+            <!-- ЗАМЕНИ src на свою карту (Google / OpenStreetMap embed).
+                 Сейчас стоит безопасная заглушка с "Chisinau" -->
             <iframe
               :src="mapEmbedSrc"
               loading="lazy"
@@ -358,43 +224,12 @@
 
           <div class="map__footer">
             <button class="btn btn--primary" type="button" @click="copy(address)">
-              <span class="btn__icon" aria-hidden="true">
-                <!-- copy -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M9 9h10v12H9V9Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </span>
+              <span class="btn__icon" aria-hidden="true"><IconCopy /></span>
               Скопировать адрес
             </button>
 
             <a class="btn btn--ghost" :href="mapsHref" target="_blank" rel="noopener">
-              <span class="btn__icon" aria-hidden="true">
-                <!-- pin -->
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 22s7-5.4 7-12a7 7 0 1 0-14 0c0 6.6 7 12 7 12Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M12 12.1a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-                </svg>
-              </span>
+              <span class="btn__icon" aria-hidden="true"><IconPin /></span>
               Открыть в картах
             </a>
           </div>
@@ -404,18 +239,8 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-useHead({
-  title: "Контакты — For Love Coffee",
-  meta: [
-    {
-      name: "description",
-      content:
-        "Контакты For Love Coffee: телефон, адрес, часы работы и соцсети. Заходи за вкусом, который согреет и подарит любовь.",
-    },
-  ],
-});
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 
 useHead({
   title: "Контакты — For Love Coffee",
@@ -428,42 +253,57 @@ useHead({
   ],
 });
 
-// ====== ДАННЫЕ (замени на свои)
-const phone = "+373 68 514 544";
-const address = "Chișinău, ул. Кофейная, 15";
-const hours = "09:00 – 22:00";
+const phone = "+373 68 514 544"; // ← замени на свой
+const address = "Chișinău, ул. Кофейная, 15"; // ← замени на свой
+const hours = "09:00 – 22:00"; // ← замени на свой
 
-// tel / maps
 const telHref = computed(() => `tel:${phone.replace(/[^\d+]/g, "")}`);
 const mapsHref = computed(() => {
   const q = encodeURIComponent(address);
   return `https://www.google.com/maps/search/?api=1&query=${q}`;
 });
 
-// Open/Close
+// Лёгкая проверка "открыто сейчас" (по локальному времени клиента)
 const isOpenNow = computed(() => {
+  // hours: "09:00 – 22:00"
   const m = hours.match(/(\d{2}):(\d{2}).*?(\d{2}):(\d{2})/);
   if (!m) return false;
-  const start = Number(m[1]) * 60 + Number(m[2]);
-  const end = Number(m[3]) * 60 + Number(m[4]);
+  const [_, sh, sm, eh, em] = m;
+  const start = Number(sh) * 60 + Number(sm);
+  const end = Number(eh) * 60 + Number(em);
   const now = new Date();
   const minutes = now.getHours() * 60 + now.getMinutes();
   return minutes >= start && minutes <= end;
 });
 
-// Карта (OSM embed без ключей)
+// Карта (заглушка). Подставь свой embed при необходимости.
 const mapEmbedSrc = computed(() => {
-  // хочешь точнее — дай координаты, я подставлю bbox/marker
+  // OpenStreetMap embed (без ключей)
+  // Подставь свои координаты bbox/marker если хочешь точнее.
   return "https://www.openstreetmap.org/export/embed.html?bbox=28.78%2C46.98%2C28.93%2C47.08&layer=mapnik&marker=47.01%2C28.86";
 });
 
 const socials = [
-  { title: "Telegram", desc: "Новости и свежая обжарка", href: "https://t.me/your_nick", kind: "telegram" },
-  { title: "Instagram", desc: "Эстетика, видео и анонсы", href: "https://instagram.com/your_account", kind: "instagram" },
-  { title: "Google Maps", desc: "Маршрут в 1 клик", href: mapsHref.value, kind: "map" },
+  {
+    title: "Telegram",
+    desc: "Новости и свежая обжарка",
+    href: "https://t.me/your_nick", // ← замени
+    icon: IconTelegram,
+  },
+  {
+    title: "Instagram",
+    desc: "Эстетика, видео и анонсы",
+    href: "https://instagram.com/your_account", // ← замени
+    icon: IconInstagram,
+  },
+  {
+    title: "Google Maps",
+    desc: "Маршрут в 1 клик",
+    href: mapsHref.value,
+    icon: IconMap,
+  },
 ];
 
-// Toast
 const toast = reactive({ show: false, text: "" });
 let toastT: ReturnType<typeof setTimeout> | null = null;
 
@@ -493,10 +333,10 @@ function showToast(text: string) {
 }
 
 function track(label: string) {
+  // сюда можно подключить аналитику, если появится
   showToast(`Открываю: ${label}`);
 }
 
-// Parallax
 const mx = ref(0);
 const my = ref(0);
 function onMouseMove(e: MouseEvent) {
@@ -508,18 +348,22 @@ function onMouseMove(e: MouseEvent) {
 const tiltStyle = computed(() => {
   const rx = (my.value * -2.2).toFixed(2);
   const ry = (mx.value * 2.2).toFixed(2);
-  return { transform: `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)` };
+  return {
+    transform: `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`,
+  };
 });
 
-// Reveal on scroll
+
+const revealRoot = ref<HTMLElement | null>(null);
 let io: IntersectionObserver | null = null;
+
 onMounted(() => {
   const els = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
   io = new IntersectionObserver(
     (entries) => {
       for (const en of entries) {
         if (en.isIntersecting) {
-          (en.target as HTMLElement).classList.add("reveal--in");
+          en.target.classList.add("reveal--in");
           io?.unobserve(en.target);
         }
       }
@@ -530,9 +374,199 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  io?.disconnect();
+  if (io) io.disconnect();
   if (toastT) clearTimeout(toastT);
 });
+function IconPhone() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M6.8 2.9c.5-.4 1.2-.4 1.7.1l2.1 2.3c.4.5.5 1.1.2 1.6l-1.1 2c-.2.4-.2.9 0 1.3a15.4 15.4 0 0 0 4.1 4.1c.4.2.9.2 1.3 0l2-1.1c.5-.3 1.2-.2 1.6.2l2.3 2.1c.5.5.5 1.2.1 1.7l-1.2 1.5c-.6.8-1.6 1.1-2.6.9-3.8-.7-7.3-2.9-10.3-5.9S4 9.2 3.3 5.4c-.2-1 .1-2 .9-2.6l1.6-1.3Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+function IconPin() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 22s7-5.4 7-12a7 7 0 1 0-14 0c0 6.6 7 12 7 12Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M12 12.1a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+      />
+    </svg>
+  );
+}
+function IconClock() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+      />
+      <path
+        d="M12 6v6l4 2"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+function IconCopy() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 9h10v12H9V9Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
+function IconCup() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M16 10h2a3 3 0 0 1 0 6h-2"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+      <path
+        d="M7 3c0 2 2 2 2 4M11 3c0 2 2 2 2 4"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
+function IconHeart() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 21s-7-4.4-9.2-8.7C1 8.7 3.2 5.8 6.4 5.5c1.8-.2 3.4.7 4.3 2 1-1.3 2.6-2.2 4.3-2 3.2.3 5.4 3.2 3.6 6.8C19 16.6 12 21 12 21Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+function IconStar() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 2l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.9 6.1 20l1.2-6.5L2.5 8.9 9.1 8 12 2Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+function IconSpark() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M12 2l1.2 4.2L17.5 7.5l-4.3 1.3L12 13l-1.2-4.2L6.5 7.5l4.3-1.3L12 2Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M19 12l.8 2.6L22 15l-2.2.4L19 18l-.8-2.6L16 15l2.2-.4L19 12Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
+function IconTelegram() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21.5 4.8 3.2 12.2c-1.1.4-1.1 1.9.1 2.3l4.7 1.6 1.8 5.6c.4 1.1 1.9 1.2 2.4.2l2.6-4.7 4.7 3.4c.8.6 2 .1 2.2-.9l2.7-14.1c.2-1.1-.9-2.1-2-1.8Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M8.1 16.1 20.6 6.2"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
+function IconInstagram() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+      />
+      <path
+        d="M12 16.2A4.2 4.2 0 1 0 12 7.8a4.2 4.2 0 0 0 0 8.4Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+      />
+      <path
+        d="M17.5 6.5h.01"
+        stroke="currentColor"
+        stroke-width="3"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
+function IconMap() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 18 3.5 20V6l5.5-2 6 2 5.5-2v14L15 20l-6-2Z"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M9 4v14M15 6v14"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+}
 </script>
 
 <style scoped>
@@ -545,7 +579,7 @@ onBeforeUnmount(() => {
   overflow: hidden;
 }
 
-/* BACKGROUND */
+
 .bg {
   position: fixed;
   inset: 0;
@@ -672,7 +706,7 @@ onBeforeUnmount(() => {
   display: grid;
   place-items: center;
 }
-.btn__icon svg {
+.btn__icon :deep(svg) {
   width: 18px;
   height: 18px;
 }
@@ -725,7 +759,7 @@ onBeforeUnmount(() => {
   box-shadow: 0 10px 20px rgba(196, 88, 52, 0.35);
 }
 
-/* GRID */
+
 .grid {
   margin-top: 18px;
   display: grid;
@@ -751,11 +785,22 @@ onBeforeUnmount(() => {
 }
 
 .card__head { margin-bottom: 14px; }
-.card__title { margin: 0; font-size: 22px; letter-spacing: -0.01em; }
-.card__subtitle { margin: 6px 0 0; opacity: 0.78; line-height: 1.5; }
+.card__title {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.card__subtitle {
+  margin: 6px 0 0;
+  opacity: 0.78;
+  line-height: 1.5;
+}
 
-/* LIST */
-.list { display: grid; gap: 12px; }
+
+.list {
+  display: grid;
+  gap: 12px;
+}
 .item {
   display: grid;
   grid-template-columns: 40px 1fr;
@@ -774,9 +819,13 @@ onBeforeUnmount(() => {
   background: rgba(196, 88, 52, 0.10);
   color: #7a3b2b;
 }
-.item__icon svg { width: 20px; height: 20px; }
+.item__icon :deep(svg) { width: 20px; height: 20px; }
 
-.item__label { font-size: 13px; opacity: 0.70; font-weight: 700; }
+.item__label {
+  font-size: 13px;
+  opacity: 0.70;
+  font-weight: 700;
+}
 .item__value {
   margin-top: 4px;
   display: flex;
@@ -816,7 +865,7 @@ onBeforeUnmount(() => {
   background: rgba(47, 140, 84, 0.10);
 }
 
-/* CALLOUT */
+
 .divider {
   height: 1px;
   margin: 16px 0;
@@ -828,11 +877,21 @@ onBeforeUnmount(() => {
   background: rgba(196, 88, 52, 0.08);
   border: 1px solid rgba(196, 88, 52, 0.18);
 }
-.callout__title { font-weight: 900; letter-spacing: -0.01em; }
-.callout__text { margin: 8px 0 0; opacity: 0.88; line-height: 1.6; }
+.callout__title {
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+.callout__text {
+  margin: 8px 0 0;
+  opacity: 0.88;
+  line-height: 1.6;
+}
 
-/* SOCIAL */
-.social { display: grid; gap: 10px; }
+
+.social {
+  display: grid;
+  gap: 10px;
+}
 .social__btn {
   display: grid;
   grid-template-columns: 42px 1fr auto;
@@ -860,14 +919,24 @@ onBeforeUnmount(() => {
   background: rgba(196, 88, 52, 0.10);
   color: #7a3b2b;
 }
-.social__icon svg { width: 22px; height: 22px; }
+.social__icon :deep(svg) { width: 22px; height: 22px; }
 
 .social__title { font-weight: 1000; }
-.social__desc { display: block; opacity: 0.76; font-size: 13px; margin-top: 2px; }
-.social__arrow { font-weight: 1000; opacity: 0.65; }
+.social__desc {
+  display: block;
+  opacity: 0.76;
+  font-size: 13px;
+  margin-top: 2px;
+}
+.social__arrow {
+  font-weight: 1000;
+  opacity: 0.65;
+}
 
-/* FEATURES */
-.features { display: grid; gap: 10px; }
+.features {
+  display: grid;
+  gap: 10px;
+}
 .feature {
   display: grid;
   grid-template-columns: 42px 1fr;
@@ -887,11 +956,11 @@ onBeforeUnmount(() => {
   background: rgba(196, 88, 52, 0.10);
   color: #7a3b2b;
 }
-.feature__icon svg { width: 22px; height: 22px; }
+.feature__icon :deep(svg) { width: 22px; height: 22px; }
 .feature__title { font-weight: 1000; }
 .feature__desc { opacity: 0.78; font-size: 13px; margin-top: 2px; }
 
-/* MAP */
+
 .map__frame {
   border-radius: 20px;
   overflow: hidden;
@@ -899,16 +968,29 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.55);
   height: 320px;
 }
-.map__frame iframe { width: 100%; height: 100%; border: 0; filter: saturate(0.98) contrast(1.02); }
-.map__footer { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 10px; }
+.map__frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: saturate(0.98) contrast(1.02);
+}
+.map__footer {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
 
-/* REVEAL */
+
 .reveal {
   opacity: 0;
   transform: translateY(14px);
   transition: opacity 420ms ease, transform 420ms ease;
 }
-.reveal--in { opacity: 1; transform: translateY(0); }
+.reveal--in {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 @media (max-width: 520px) {
   .page { padding-top: 110px; }
@@ -917,3 +999,5 @@ onBeforeUnmount(() => {
   .map__frame { height: 260px; }
 }
 </style>
+
+*/
