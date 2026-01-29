@@ -14,12 +14,11 @@
         <div class="intro__badge">☕ Контакты & Тёплые встречи</div>
 
         <h1 class="intro__title">
-          На связи с любовью<span class="dot">.</span>
+          На связи с <span class="dot">любовью.</span>
         </h1>
 
         <p class="intro__text">
-          Есть вопрос, идея или просто настроение зайти? Мы рядом.
-          Пиши, звони — и да, у нас всегда найдётся чашка с любовью.
+           Чтобы каждая встреча начиналась c кофе.
         </p>
 
         <div class="intro__actions">
@@ -100,7 +99,7 @@
         <article class="card reveal">
           <div class="card__head">
             <h2 class="card__title">Наши контакты</h2>
-            <p class="card__subtitle">Быстро, просто, с любовью.</p>
+            <p class="card__subtitle">Быстро, просто, уютно.</p>
           </div>
 
           <div class="list">
@@ -189,8 +188,15 @@
           <div class="callout">
             <div class="callout__title">Почему наш кофе — это про людей?</div>
             <p class="callout__text">
-              За каждой чашкой стоит фермер, обжарщик и бариста, но главное в ней — ты.
-              Мы верим, что лучший напиток получается там, где есть искренний диалог и любовь к делу.
+              В 
+              <span class="brand">
+    For-L
+    <img class="brand__inf" :src="infLogo" alt="∞" />
+    ve Coffee
+  </span>
+               мы верим, что кофе — это не спешка, а момент.
+              Момент первой встречи, тихой паузы наедине с собой или тёплого разговора
+              с теми, кто рядом.
             </p>
           </div>
         </article>
@@ -406,6 +412,7 @@
 
 
 <script setup lang="ts">
+import infLogo from "@/assets/logo.svg";
 useHead({
   title: "Контакты — For Love Coffee",
   meta: [
@@ -594,6 +601,28 @@ onBeforeUnmount(() => {
   100% { transform: translate(0, 0) scale(1); }
 }
 
+.lead {
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  font-weight: 800;
+}
+
+.brand__inf {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0;
+  width: 18px;
+  height: 28px;
+  transform: translateY(2px);
+}
+
 .wrap {
   max-width: 1100px;
   margin: 0 auto;
@@ -633,7 +662,7 @@ onBeforeUnmount(() => {
   letter-spacing: -0.02em;
 }
 .dot {
-  color: #c45834;
+  color: rgba(233, 68, 68, 0.952);
   text-shadow: 0 10px 25px rgba(196, 88, 52, 0.25);
 }
 .intro__text {
@@ -651,21 +680,34 @@ onBeforeUnmount(() => {
   gap: 10px;
 }
 
+/* =========================
+   BUTTONS (1-в-1 как на главной)
+   ========================= */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  border-radius: 999px;
-  padding: 12px 16px;
-  font-weight: 800;
-  letter-spacing: 0.2px;
-  border: 1px solid transparent;
+
+  border: none;
   cursor: pointer;
+  border-radius: 999px;
+  padding: 14px 22px;
+
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  background: rgba(0, 0, 0, 0.08);
+  color: #111;
+
   text-decoration: none;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
   user-select: none;
 }
-.btn:active { transform: translateY(1px) scale(0.99); }
+
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0px) scale(0.99); }
+
 .btn__icon {
   width: 18px;
   height: 18px;
@@ -677,27 +719,27 @@ onBeforeUnmount(() => {
   height: 18px;
 }
 
+/* primary — как на главной */
 .btn--primary {
-  background: linear-gradient(135deg, #c45834, #9b3f2a);
+  background: #b24a4a;
   color: #fff;
-  box-shadow: 0 14px 26px rgba(196, 88, 52, 0.25);
+  box-shadow: 0 10px 24px rgba(178, 74, 74, 0.26);
 }
-.btn--primary:hover { box-shadow: 0 16px 32px rgba(196, 88, 52, 0.32); }
+.btn--primary:hover { background: #933737; }
 
-.btn--ghost {
-  background: rgba(255, 255, 255, 0.55);
-  border-color: rgba(80, 55, 48, 0.16);
-  color: #2a1f1c;
-}
-.btn--ghost:hover { background: rgba(255, 255, 255, 0.72); }
-
+/* secondary — как на главной */
+.btn--ghost,
 .btn--soft {
-  background: rgba(196, 88, 52, 0.10);
-  border-color: rgba(196, 88, 52, 0.20);
-  color: #7a3b2b;
+  background: rgba(163, 147, 147, 0.08);
+  color: #111;
+  box-shadow: none;
 }
-.btn--soft:hover { background: rgba(196, 88, 52, 0.14); }
+.btn--ghost:hover,
+.btn--soft:hover {
+  background: rgba(232, 13, 13, 0.12)
+}
 
+/* TOAST */
 .toast {
   margin-top: 14px;
   display: inline-flex;
@@ -721,8 +763,8 @@ onBeforeUnmount(() => {
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  background: #c45834;
-  box-shadow: 0 10px 20px rgba(196, 88, 52, 0.35);
+  background: #b24a4a;
+  box-shadow: 0 10px 20px rgba(178, 74, 74, 0.24);
 }
 
 /* GRID */
@@ -800,8 +842,10 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(80, 55, 48, 0.14);
   background: rgba(255, 255, 255, 0.55);
   cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
 }
 .mini:hover { background: rgba(255, 255, 255, 0.72); }
+.mini:active { transform: translateY(1px); }
 
 .pill {
   font-size: 12px;
@@ -812,8 +856,8 @@ onBeforeUnmount(() => {
   background: rgba(255, 255, 255, 0.55);
 }
 .pill[data-open="true"] {
-  border-color: rgba(47, 140, 84, 0.28);
-  background: rgba(47, 140, 84, 0.10);
+  border-color: rgba(212, 31, 40, 0.28);
+  background: rgba(218, 71, 71, 0.338);
 }
 
 /* CALLOUT */
@@ -917,3 +961,4 @@ onBeforeUnmount(() => {
   .map__frame { height: 260px; }
 }
 </style>
+
