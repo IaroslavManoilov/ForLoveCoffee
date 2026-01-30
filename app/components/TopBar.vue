@@ -1,36 +1,68 @@
 <template>
     <header class="topbar">
         <div class="topbar__inner">
-            <RouterLink class="logo" to="/">
+            <NuxtLink class="logo" to="/">
                 <img :src="topLogo" alt="For-love coffee" />
-            </RouterLink>
+            </NuxtLink>
 
             <nav class="nav">
-                <RouterLink class="nav__link" to="/" end>Главная</RouterLink>
-                <RouterLink class="nav__link" to="/about">Про нас</RouterLink>
-                <RouterLink class="nav__link" to="/contacts">Контакты</RouterLink>
+                <NuxtLink class="nav__link" to="/" exact>Главная</NuxtLink>
+                <NuxtLink class="nav__link" to="/about">Про нас</NuxtLink>
+                <NuxtLink class="nav__link" to="/contacts">Контакты</NuxtLink>
+
+                <!-- 👤 + 🔒/🔓 -->
+                <NuxtLink class="adminBtn" to="/admin/login" aria-label="Admin">
+                    <span class="adminIcon">👤</span>
+                    <span class="lock" :data-ok="isAdminAuthed ? '1' : '0'">
+                        {{ isAdminAuthed ? "🔓" : "🔒" }}
+                    </span>
+                </NuxtLink>
             </nav>
         </div>
     </header>
 </template>
 
-<script setup>
-import { RouterLink } from "vue-router";
-import topLogo from "@/assets/image5.svg";
-// если файл у тебя называется "image 5.svg", то:
-// import topLogo from "@/assets/image 5.svg";
+<script setup lang="ts">
+import topLogo from "@/assets/image5.svg"
+
+const isAdminAuthed = ref(false)
+const route = useRoute()
+
+async function checkAdminAuth() {
+    if (!import.meta.client) return
+    try {
+        const me = await $fetch<{ ok: boolean }>("/api/admin/me")
+        isAdminAuthed.value = !!me?.ok
+    } catch {
+        isAdminAuthed.value = false
+    }
+}
+
+onMounted(checkAdminAuth)
+
+watch(
+    () => route.fullPath,
+    () => {
+        checkAdminAuth()
+    }
+)
+
+if (import.meta.client) {
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) checkAdminAuth()
+    })
+}
 </script>
+
+
 
 <style scoped>
 .topbar {
     position: fixed;
     top: 12px;
-
-    /* ✅ вместо left/right */
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-
     height: 110px;
     z-index: 50;
 
@@ -39,8 +71,6 @@ import topLogo from "@/assets/image5.svg";
     -webkit-backdrop-filter: blur(12px);
 
     border-bottom: 2px solid rgba(255, 255, 255, 0.35);
-
-    /* ✅ страховка от выезда */
     overflow-x: clip;
 }
 
@@ -48,7 +78,6 @@ import topLogo from "@/assets/image5.svg";
     height: 100%;
     width: 100%;
     padding: 0 clamp(16px, 4vw, 60px);
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -92,7 +121,6 @@ import topLogo from "@/assets/image5.svg";
     display: inline-flex;
     align-items: center;
     line-height: 1;
-
     text-decoration: none;
     color: rgba(0, 0, 0, 0.72);
     font-weight: 500;
@@ -115,5 +143,40 @@ import topLogo from "@/assets/image5.svg";
     background: #b24a4a;
     bottom: -10px;
     border-radius: 3px;
+}
+
+/* 👤 кнопка админа */
+.adminBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 56px;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 999px;
+    text-decoration: none;
+
+    background: rgba(0, 0, 0, 0.06);
+    color: rgba(0, 0, 0, 0.72);
+}
+
+.adminBtn:hover {
+    background: rgba(178, 74, 74, 0.14);
+}
+
+.adminIcon {
+    line-height: 1;
+}
+
+.lock {
+    font-size: 16px;
+    line-height: 1;
+    opacity: 0.9;
+}
+
+/* чуть выделим 🔓 когда залогинен */
+.lock[data-ok="1"] {
+    filter: drop-shadow(0 4px 10px rgba(47, 124, 76, 0.25));
 }
 </style>

@@ -1,127 +1,127 @@
 <template>
   <div class="page">
     <main class="wrap">
-      <section class="card" v-if="order">
-        <div class="ok">
-          <div class="okIcon">✅</div>
-          <div>
-            <h1 class="title">Заказ оформлен</h1>
-            <p class="sub">Номер заказа: <b>{{ order.id }}</b></p>
-            <p class="sub">Время выдачи: <b>{{ order.pickupTime }}</b></p>
-            <p class="sub">Время оформления: <b>{{ formatDate(order.createdAt) }}</b></p>
+      <section class="card">
+        <h1 class="title">Заказ оформлен</h1>
 
+        <div v-if="pending" class="empty">Загрузка…</div>
+        <div v-else-if="errorText" class="empty">{{ errorText }}</div>
+
+        <div v-else-if="order" class="box">
+          <div class="metaLine">
+            <b>Номер заказа:</b> {{ order.id }}
           </div>
-        </div>
-
-        <div class="receipt">
-          <div class="rTitle">Чек-квитанция</div>
-
-          <div class="rMeta">
-            <div>Дата: {{ formatDate(order.createdAt) }}</div>
-            <div>Оплата: <b>{{ payText }}</b></div>
-            <div>Статус: <b>{{ order.payment.paid ? "Оплачен" : "Ожидает оплаты" }}</b></div>
-
-            <div v-if="order.payment.method === 'cash' && order.payment.changeFrom">
-              Сдача с: <b>{{ order.payment.changeFrom }} MDL</b>
-            </div>
-
-            <div>
-              {{ order.delivery.type === "delivery" ? "Доставка" : "Самовывоз" }}
-              <span v-if="order.delivery.address"> • {{ order.delivery.address }}</span>
-            </div>
-
-            <div v-if="order.delivery.type === 'delivery'">
-              Расстояние: <b>{{ order.delivery.distanceKm }} км</b> • Доставка: <b>{{ order.delivery.fee }} MDL</b>
-            </div>
-
-            <div>Контакт: {{ order.customer.name }} • {{ order.customer.phone }}</div>
+          <div class="metaLine">
+            <b>Время оформления:</b> {{ fmtDate(order.createdAt) }}
+          </div>
+          <div class="metaLine">
+            <b>Готово через:</b> {{ order.prepMinutes }} мин
+          </div>
+          <div class="metaLine">
+            <b>Готово к:</b> {{ fmtTime(order.readyAt) }}
           </div>
 
-          <div class="list">
-            <div v-for="i in order.items" :key="i.id" class="row">
-              <div class="left">
-                <div class="name">{{ i.title }}</div>
-                <div class="meta">{{ i.qty }} × {{ i.price }} MDL</div>
-              </div>
-              <div class="price">{{ i.qty * i.price }} MDL</div>
+          <div class="metaLine">
+            <b>Контакт:</b> {{ order.customerName }} • {{ order.customerPhone }}
+          </div>
+
+          <div class="metaLine">
+            <b>Способ:</b> {{ order.deliveryType === "delivery" ? "Доставка" : "Самовывоз" }}
+            <span v-if="order.deliveryType === 'delivery' && order.deliveryAddress"> • {{ order.deliveryAddress }}</span>
+          </div>
+
+          <div class="metaLine">
+            <b>Оплата:</b> {{ order.paymentMethod === "cash" ? "Наличными" : "Картой" }} при получении
+            • <b>{{ order.paid ? "Оплачен" : "Ожидает оплаты" }}</b>
+          </div>
+
+          <div v-if="order.paymentMethod === 'cash' && order.changeFrom" class="metaLine">
+            <b>Сдача с:</b> {{ order.changeFrom }} MDL
+          </div>
+          <div v-if="order.paymentMethod === 'cash' && order.changeDue != null" class="metaLine">
+            <b>Сдача дать:</b> {{ order.changeDue }} MDL
+          </div>
+
+          <hr class="hr" />
+
+          <div class="items">
+            <div v-for="i in order.items" :key="i.id" class="itemRow">
+              <div class="name">{{ i.title }}</div>
+              <div class="right">{{ i.qty }} × {{ i.price }}</div>
+              <div class="right price">{{ i.qty * i.price }} MDL</div>
             </div>
           </div>
+
+          <hr class="hr" />
 
           <div class="totalLine">
             <div>Товары</div>
-            <div class="money">{{ order.subtotal }} MDL</div>
+            <div class="price">{{ order.subtotal }} MDL</div>
           </div>
 
-          <div v-if="order.delivery.type === 'delivery'" class="totalLine">
+          <div v-if="order.deliveryType === 'delivery'" class="totalLine">
             <div>Доставка</div>
-            <div class="money">{{ order.delivery.fee }} MDL</div>
+            <div class="price">{{ order.deliveryFee }} MDL</div>
           </div>
 
-          <div class="total">
+          <div class="totalLine big">
             <div>Итого</div>
-            <div class="totalPrice">{{ order.total }} MDL</div>
+            <div class="price">{{ order.total }} MDL</div>
+          </div>
+
+          <div class="actions">
+            <NuxtLink class="btn btn--primary" to="/menu">Вернуться в меню</NuxtLink>
           </div>
         </div>
-
-        <div class="actions">
-          <button class="btn btn--ghost" type="button" @click="print">Скачать чек (PDF)</button>
-          <NuxtLink class="btn btn--primary" to="/menu">Вернуться в меню</NuxtLink>
-        </div>
-
-        <p class="printHint">
-          Нажми “Скачать чек (PDF)” → в окне печати выбери “Save as PDF”.
-        </p>
-      </section>
-
-      <section class="card" v-else>
-        <h1 class="title">Заказ не найден</h1>
-        <p class="sub">Скорее всего, страница открыта без orderId.</p>
-        <NuxtLink class="btn btn--primary" to="/menu">В меню</NuxtLink>
       </section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+useHead({ title: "Заказ оформлен" })
+
+type OrderItem = { id: string; title: string; price: number; qty: number; category?: string }
 type Order = {
-  id: string // FL-####
+  id: string
   createdAt: string
-  status: "created" | "paid"
-  customer: { name: string; phone: string }
-  delivery: {
-    type: "pickup" | "delivery"
-    address: string
-    distanceKm: number
-    fee: number
-  }
-  pickupTime: string
-  payment: { method: "cash" | "card"; paid: boolean; changeFrom?: number | null }
+  customerName: string
+  customerPhone: string
+  deliveryType: "pickup" | "delivery"
+  deliveryAddress: string
+  deliveryDistanceKm: number
+  deliveryFee: number
+  prepMinutes: number
+  readyAt: string
+  paymentMethod: "cash" | "card"
+  paid: boolean
+  changeFrom?: number | null
+  changeDue?: number | null
   comment: string
-  items: Array<{ id: string; title: string; price: number; qty: number; tag: string; img: string }>
   subtotal: number
   total: number
+  items: OrderItem[]
 }
 
-useHead({ title: "Успешно — For Love Coffee" })
-
 const route = useRoute()
-const order = ref<Order | null>(null)
+const orderId = computed(() => String(route.query.orderId ?? "").trim())
 
-onMounted(() => {
-  const orderId = String(route.query.orderId || "")
-  if (!orderId) return
+const { data, pending, error } = await useFetch<{ ok: boolean; order: Order }>(
+  () => `/api/orders/${encodeURIComponent(orderId.value)}`,
+  { server: false }
+)
 
-  const raw = localStorage.getItem("forlove_orders_v1")
-  const list: Order[] = raw ? JSON.parse(raw) : []
-  order.value = list.find((o) => o.id === orderId) || null
+const order = computed(() => data.value?.order ?? null)
+
+const errorText = computed(() => {
+  if (!orderId.value) return "Нет orderId в ссылке."
+  const e: any = error.value
+  if (!e) return ""
+  if (e?.statusCode === 404) return "Заказ не найден."
+  return "Ошибка загрузки заказа."
 })
 
-const payText = computed(() => {
-  if (!order.value) return ""
-  return order.value.payment.method === "cash" ? "Наличными при получении" : "Картой при получении"
-})
-
-function formatDate(iso: string) {
+function fmtDate(iso: string) {
   try {
     return new Date(iso).toLocaleString()
   } catch {
@@ -129,173 +129,32 @@ function formatDate(iso: string) {
   }
 }
 
-function print() {
-  window.print()
+function fmtTime(iso: string) {
+  try {
+    return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  } catch {
+    return iso
+  }
 }
 </script>
 
 <style scoped>
-.page {
-  min-height: 100vh;
-  padding: 90px 18px 64px;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: #241b18;
-}
-.wrap {
-  max-width: 860px;
-  margin: 0 auto;
-}
-.card {
-  border-radius: 26px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(80, 55, 48, 0.12);
-  box-shadow: 0 18px 50px rgba(32, 18, 14, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.ok {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.okIcon {
-  font-size: 26px;
-}
-.title {
-  margin: 0;
-  font-size: 28px;
-  letter-spacing: -0.02em;
-}
-.sub {
-  margin: 6px 0 0;
-  opacity: 0.8;
-}
-
-.receipt {
-  margin-top: 14px;
-  border-radius: 22px;
-  padding: 14px;
-  border: 1px solid rgba(80, 55, 48, 0.12);
-  background: rgba(255, 255, 255, 0.6);
-}
-.rTitle {
-  font-weight: 1000;
-  font-size: 16px;
-}
-.rMeta {
-  margin-top: 8px;
-  display: grid;
-  gap: 4px;
-  font-weight: 800;
-  font-size: 12px;
-  opacity: 0.88;
-}
-
-.list {
-  margin-top: 10px;
-  display: grid;
-  gap: 10px;
-}
-.row {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 16px;
-  border: 1px solid rgba(80, 55, 48, 0.1);
-  background: rgba(255, 255, 255, 0.65);
-}
-.name {
-  font-weight: 1000;
-}
-.meta {
-  margin-top: 2px;
-  font-size: 12px;
-  opacity: 0.75;
-}
-.price {
-  font-weight: 1000;
-  color: #b24a4a;
-  white-space: nowrap;
-}
-
-.totalLine {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  font-weight: 1000;
-  opacity: 0.9;
-}
-.money {
-  color: #b24a4a;
-}
-
-.total {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 10px;
-  border-radius: 16px;
-  background: rgba(178, 74, 74, 0.08);
-  border: 1px solid rgba(178, 74, 74, 0.16);
-  font-weight: 1000;
-}
-.totalPrice {
-  color: #b24a4a;
-}
-
-.actions {
-  margin-top: 14px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  border: none;
-  cursor: pointer;
-  border-radius: 999px;
-  padding: 14px 22px;
-  font-weight: 800;
-  font-size: 15px;
-  transition: transform 0.15s ease, background 0.15s ease;
-  background: rgba(0, 0, 0, 0.08);
-  color: #111;
-  text-decoration: none;
-}
-.btn:hover {
-  transform: translateY(-1px);
-}
-.btn--primary {
-  background: #b24a4a;
-  color: #fff;
-}
-.btn--ghost {
-  background: rgba(163, 147, 147, 0.08);
-}
-
-.printHint {
-  margin: 10px 0 0;
-  font-size: 12px;
-  opacity: 0.75;
-}
-
-/* печать: показываем только чек */
-@media print {
-  .actions,
-  .printHint {
-    display: none;
-  }
-  .page {
-    padding: 0;
-  }
-  .card {
-    box-shadow: none;
-    border: none;
-    background: #fff;
-  }
-}
+.page { min-height: 100vh; padding: 90px 18px 64px; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #241b18; }
+.wrap { max-width: 980px; margin: 0 auto; }
+.card { border-radius: 26px; padding: 20px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(80, 55, 48, 0.12); box-shadow: 0 18px 50px rgba(32, 18, 14, 0.1); backdrop-filter: blur(10px); }
+.title { margin: 0; font-size: 28px; }
+.empty { margin-top: 14px; padding: 14px; border-radius: 18px; border: 1px solid rgba(80, 55, 48, 0.12); background: rgba(255, 255, 255, 0.6); font-weight: 900; opacity: 0.85; }
+.box { margin-top: 14px; border-radius: 18px; padding: 14px; border: 1px solid rgba(80, 55, 48, 0.12); background: rgba(255, 255, 255, 0.6); }
+.metaLine { margin-top: 6px; font-size: 13px; font-weight: 800; opacity: 0.9; }
+.hr { border: none; border-top: 1px solid rgba(80, 55, 48, 0.12); margin: 12px 0; }
+.items { display: grid; gap: 8px; }
+.itemRow { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 10px; border-radius: 16px; border: 1px solid rgba(80, 55, 48, 0.10); background: rgba(255, 255, 255, 0.65); font-weight: 900; font-size: 13px; }
+.name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.right { text-align: right; }
+.price { color: #b24a4a; white-space: nowrap; }
+.totalLine { display: flex; justify-content: space-between; font-weight: 1000; margin-top: 8px; }
+.totalLine.big { font-size: 16px; }
+.actions { margin-top: 14px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; border-radius: 999px; padding: 14px 22px; font-weight: 900; background: rgba(0, 0, 0, 0.08); color: #111; text-decoration: none; }
+.btn--primary { background: #b24a4a; color: #fff; }
 </style>
